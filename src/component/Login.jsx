@@ -1,177 +1,109 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import bgImage from "../assets/bg.avif";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// Adjust the path to your image
+import bug_cover from '../assets/bug_cover.png';
 
-const mockCredentials = { username: "user", password: "password" };
+export default function LoginForm() {
+  const [username, setUsername] = useState('username');
+  const [password, setPassword] = useState('password');
+  const [error, setError] = useState('');
+  const navigate = useNavigate(); 
 
-const Login = () => {
-  const [isDay, setIsDay] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(''); 
 
-  const handleToggle = () => {
-    setIsDay(!isDay);
-  };
+    // Mock credentials
+    const mockCredentials = {
+      username: 'username',
+      password: 'password',
+    };
 
-  const handleLogin = (e) => {
-    e.preventDefault(); // Prevent form from submitting and refreshing the page
-    if (
-      username === mockCredentials.username &&
-      password === mockCredentials.password
-    ) {
-      localStorage.setItem("isAuthenticated", "true");
-      toast.success("Login successful!");
-      setTimeout(() => navigate("/dashboard"), 1000); // After success, navigate to dashboard
+    // Mock validation (you can replace this with your real API response logic)
+    if (username === mockCredentials.username && password === mockCredentials.password) {
+      toast.success('Login successful!');
+      localStorage.setItem('user', JSON.stringify({ username })); // Save user data in local storage
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000); // Navigate to the dashboard page after successful login
     } else {
-      toast.error("Invalid credentials!");
+      toast.error('Invalid credentials');
+      setError('Invalid credentials'); // Show error if credentials do not match
     }
   };
 
   return (
-    <div
-      className={`flex justify-center items-center h-screen transition-all duration-2000 ${
-        isDay ? "bg-white" : "bg-black"
-      }`}
-      style={{
-        backgroundImage: `url(${bgImage})`,
-        backgroundSize: "cover",  // Ensures the background image covers the whole page
-        backgroundPosition: "center",  // Centers the image
-      }}
-    >
-      <ToastContainer />
-      <label className="absolute top-10 left-1/2 transform -translate-x-1/2 cursor-pointer">
-        <input
-          type="checkbox"
-          className="hidden"
-          checked={isDay}
-          onChange={handleToggle}
-        />
-        <div
-          className={`w-9 h-9 rounded-full relative transition-all duration-300 ${
-            isDay ? "bg-yellow-400" : "bg-transparent"
-          }`}
-          style={{
-            boxShadow: isDay
-              ? "inset 32px -32px 0 0 #fff"
-              : "inset 16px -16px 0 0 #fff",
-            transform: isDay ? "scale(0.5)" : "scale(1) rotate(-2deg)",
-          }}
-        >
-          <div
-            className={`absolute w-full h-full rounded-full top-0 left-0 transition-all duration-300 ${
-              isDay ? "bg-yellow-400" : ""
-            }`}
-          ></div>
-          <div
-            className={`absolute w-2 h-2 rounded-full bg-yellow-400 transition-all duration-500 ${
-              isDay ? "scale-150" : "scale-0"
-            }`}
-            style={{
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          ></div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-500">
+       <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+      <div className="flex flex-col lg:flex-row bg-white rounded-lg shadow-lg border border-gray-300 w-full max-w-5xl">
+        {/* Side Image Section */}
+        <div className="hidden lg:block lg:w-1/2">
+          <img
+            src={bug_cover}
+            alt="Login Illustration"
+            className="w-full h-full object-cover rounded-l-lg border-r border-gray-300"
+          />
         </div>
-      </label>
 
-      <div
-        className={`w-96 h-[450px] border-2 rounded-2xl flex justify-center items-center backdrop-blur-lg ${
-          isDay
-            ? " bg-gradient-to-b from-transparent to-yellow-500 border-blue-500"
-            : " bg-gradient-to-b from-transparent to-teal-400 border-blue-100"
-        }`}
-      >
-        <form className="w-full" onSubmit={handleLogin}>
-          <h2
-            className={`text-2xl font-bold text-center mb-8 ${
-              "text-white"
-            }`}
-          >
-            Login Here 
-          </h2>
-
-          <div className="relative mb-8 w-72">
-            <ion-icon
-              name="mail-outline"
-              className={`absolute top-1/2 left-2 transform -translate-y-1/2 ${
-                isDay ? "text-black" : "text-white"
-              } text-xl`}
-            ></ion-icon>
-            <input
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className={`w-full h-12 bg-transparent border-b-2 pl-10 focus:outline-none focus:ring-0 ${
-                "text-white placeholder-white"
-              }`}
-            />
-            <label
-              className={`absolute left-2 text-xl transform -translate-y-1/2 top-4 -bottom-2/3 transition-all duration-300 ${
-               "text-white"
-              }`}
+        {/* Login Form Section */}
+        <div className="w-full lg:w-1/2 p-10">
+          <h1 className="text-3xl font-bold text-blue-400 mb-6 text-center border-b border-gray-300 pb-3">
+            Bug Tracker 
+          </h1>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="mt-2 block w-full px-4 py-2 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-2 block w-full px-4 py-2 border border-indigo-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                required
+              />
+            </div>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+            <button
+              type="submit"
+              className="w-full flex justify-center py-3 px-6 border border-transparent rounded-md shadow-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Username
-            </label>
-          </div>
-
-          <div className="relative mb-8 w-72">
-            <ion-icon
-              name="lock-closed-outline"
-              className={`absolute top-1/2 left-2 transform -translate-y-1/2 ${
-                "text-white"
-              } text-xl`}
-            ></ion-icon>
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`w-full h-12 bg-transparent border-b-2 pl-10 focus:outline-none focus:ring-0 ${
-                "text-white placeholder-white"
-              }`}
-            />
-            <label
-              className={`absolute left-2 text-xl transform -translate-y-1/2 transition-all duration-300 bottom-2/3 ${
-                 "text-white"
-              }`}
-            >
-              Password
-            </label>
-          </div>
-
-          <div className="flex justify-between mb-6 text-sm">
-            <label className={`${ "text-white"}`}>
-              <input type="checkbox" className="mr-2" /> Remember me
-            </label>
-            <label className={`${ "text-white"}`}>
-              Forgot Password
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full h-10 rounded-full bg-gray-200 text-lg font-bold hover:bg-gray-300 transition duration-200"
-          >
-            Log In
-          </button>
-
-          <div className="text-center text-sm mt-6">
-            <p className={`${ "text-white"}`}>
-              Don't have an account?{" "}
-              <a href="#" className="font-bold hover:underline">
-                Register
-              </a>
+              Log In
+            </button>
+          </form>
+          <div className="mt-6 text-center text-sm text-gray-600">
+            <p> To log in:</p>
+            <p>
+              <strong>Username:</strong> username
+            </p>
+            <p>
+              <strong>Password:</strong> password
             </p>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
-};
-
-export default Login;
+}
